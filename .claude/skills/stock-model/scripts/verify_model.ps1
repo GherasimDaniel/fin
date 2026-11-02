@@ -29,7 +29,8 @@ try {
   if ($salesVals.Count -lt $cols.Count - 2) { "Sales row is empty/zero in $($cols.Count - $salesVals.Count) columns"; $fail++ }
   # every projection column needs its driver inputs (blank inputs silently zero the margins)
   $projCols = @($cols | Where-Object { $m.Cells(3, $_).Text.EndsWith('E') })
-  foreach ($c in $projCols) { foreach ($k in 'gm','taxR','sgaP','rdP','da','cx','frac') { $x = $m.Cells($RW.$k, $c).Value2; if (-not ($x -is [double])) { "Blank projection input: row $k, column $($m.Cells(3, $c).Text)"; $fail++ } } }
+  # estimate quarters (labels starting with Q) carry P&L drivers only; DCF drivers live on the annual columns
+  foreach ($c in $projCols) { $isQ = $m.Cells(3, $c).Text.StartsWith('Q'); foreach ($k in 'gm','taxR','sgaP','rdP','da','cx','frac') { if ($isQ -and @('da','cx','frac') -contains $k) { continue }; $x = $m.Cells($RW.$k, $c).Value2; if (-not ($x -is [double])) { "Blank projection input: row $k, column $($m.Cells(3, $c).Text)"; $fail++ } } }
   if (-not ($m.Range("C$($RW.vg)").Value2 -is [double])) { 'No valuation computed (value per share is blank)'; $fail++ }
   "`nValuation:"; foreach ($k in 'ev','eqv','vg','vm','nvps','price','tvpct','impm') { '{0,-50} {1}' -f $m.Range("B$($RW.$k)").Text, $m.Range("C$($RW.$k)").Text }
   "`nScenario table:"; for ($r = $RW.tHdr; $r -le $RW.t1 + 2; $r++) { (2..9 | ForEach-Object { $m.Cells($r, $_).Text }) -join ' | ' }

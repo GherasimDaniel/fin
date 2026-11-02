@@ -360,7 +360,7 @@ try {
   FR $w 'C36:G42' "=(SUMPRODUCT($ufc,(1+`$B36)^(-$prr))+Model!`$$pN`$$($RW.ufcf)*(1+C`$35)/(`$B36-C`$35)/(1+`$B36)^Model!`$C`$$($RW.yrs)$bridge"
   Sect $w 'B44:H44' 'Sensitivity: value per share ($) - WACC (rows) vs exit EV/EBITDA multiple (columns)'
   FR $w 'C46:G52' "=(SUMPRODUCT($ufc,(1+`$B46)^(-$prr))+Model!`$C`$$($RW.ebitda)*C`$45/(1+`$B46)^Model!`$C`$$($RW.yrs)$bridge"
-  $w.Range('C36:G52').NumberFormat = $fEPS
+  $w.Range('C36:G42').NumberFormat = $fEPS; $w.Range('C46:G52').NumberFormat = $fEPS   # leave the multiple header row (45) as x
   foreach ($rng in 'C36:G42','C46:G52') { $fc = $w.Range($rng).FormatConditions.Add(1, 7, '=$C$5'); $fc.Interior.Color = (BGR 'C6EFCE') }
   foreach ($a in 'E39','E49') { $w.Range($a).Font.Bold = $true; $w.Range($a).Borders.LineStyle = 1 }
   Note $w 'B54' 'Green = value at or above the current share price. Boxed center cell = base case (ties to the Model valuation).'
