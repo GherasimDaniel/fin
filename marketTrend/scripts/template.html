@@ -1,0 +1,819 @@
+<title>S&amp;P 500 Month Delta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;1,400;1,500&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: the same survey-map plate as the century delta, zoomed to one month.
+   Title block (date + day's numbers) above the plate, daily index strip and month-so-far rankings below. Water labels in italic serif. */
+:root {
+  --land: #eceee7;
+  --land-2: #e3e7dd;
+  --sea: #d5e3e8;
+  --sea-2: #c3d6de;
+  --panel: #f6f7f3;
+  --ink: #16201b;
+  --ink-2: #47534c;
+  --muted: #6f7a73;
+  --rule: #c8cfc7;
+  --accent: #1f5d78;
+  --accent-ink: #ffffff;
+  --up: #2a78d6;
+  --down: #e34948;
+  --particle: rgba(255,255,255,0.62);
+  --s0: #8b918c; --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+  --display: "Spectral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --land: #0f1412; --land-2: #151b18; --sea: #0b1820; --sea-2: #102330; --panel: #131916;
+    --ink: #e7ece7; --ink-2: #b2bcb5; --muted: #85908a; --rule: #28322d;
+    --accent: #79b6d1; --accent-ink: #0b1418; --up: #3987e5; --down: #e66767; --particle: rgba(255,255,255,0.5);
+    --s0: #7a807b; --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --land: #0f1412; --land-2: #151b18; --sea: #0b1820; --sea-2: #102330; --panel: #131916;
+  --ink: #e7ece7; --ink-2: #b2bcb5; --muted: #85908a; --rule: #28322d;
+  --accent: #79b6d1; --accent-ink: #0b1418; --up: #3987e5; --down: #e66767; --particle: rgba(255,255,255,0.5);
+  --s0: #7a807b; --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--land); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(34px, 5.4vw, 56px); line-height: 1.02; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h1 em { font-weight: 400; font-style: italic; }
+.lede { max-width: 66ch; color: var(--ink-2); margin: 4px 0 0; font-size: 16px; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 24px; margin: 0; text-wrap: balance; }
+h3.k { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+.status { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; margin-top: 6px; font-size: 13px; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 12px 4px 10px; background: var(--panel); }
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.status.ok .dot { background: var(--s6); }
+.status.busy .dot { background: var(--accent); animation: pulse 1s ease-in-out infinite; }
+.status.err .dot { background: var(--down); }
+@keyframes pulse { 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) { .status.busy .dot { animation: none; } }
+.tablewrap.wk { max-height: none; }
+.wk table { min-width: 0; }
+.wk th, .wk td { white-space: nowrap; padding: 6px 10px; }
+.wk th small { display: block; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--muted); }
+.wk th:first-child, .wk td:first-child { position: sticky; left: 0; background: var(--land); z-index: 1; padding-left: 0; }
+.wk tr.total td { font-weight: 600; }
+.wk tr.sect td { padding-top: 16px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; border-bottom-color: var(--ink-2); }
+.wk td .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 7px; }
+.wk .cur { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.sub { color: var(--ink-2); margin: 2px 0 0; font-size: 14px; max-width: 70ch; }
+
+.readout { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 32px; border-top: 1px solid var(--ink); padding-top: 12px; }
+.when { font-family: var(--display); font-style: italic; font-weight: 500; font-size: clamp(34px, 5.6vw, 56px); line-height: 0.95; min-width: 5.4em; }
+.when small { display: block; font-family: var(--sans); font-style: normal; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 28px; flex: 1; min-width: 0; }
+.stat { display: flex; flex-direction: column; min-width: 0; }
+.stat .k { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.stat .v { font-size: 22px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+.stat .v small { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+
+.stage { position: relative; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; background: var(--land); }
+.stage canvas { display: block; width: 100%; touch-action: pan-y; }
+.tip {
+  position: absolute; pointer-events: none; z-index: 5; background: var(--panel); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: 4px; padding: 10px 12px; font-size: 13px; line-height: 1.4;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.14); max-width: 290px; min-width: 210px;
+}
+.tip .tn { font-family: var(--display); font-style: italic; font-size: 17px; font-weight: 500; }
+.tip .tg { color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+.tip .row { display: flex; justify-content: space-between; gap: 16px; font-variant-numeric: tabular-nums; }
+.tip .row span:first-child { color: var(--ink-2); }
+.tip .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.tip .mem { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--rule); color: var(--ink-2); font-size: 12px; }
+
+.caption { display: flex; gap: 14px; align-items: baseline; min-height: 3.2em; }
+.caption .cy { font-family: var(--display); font-weight: 600; font-size: 15px; white-space: nowrap; color: var(--ink-2); }
+.caption p { margin: 0; font-family: var(--display); font-size: 18px; line-height: 1.4; max-width: 74ch; }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.play {
+  display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-ink);
+  border: 0; border-radius: 999px; padding: 9px 18px 9px 14px; font-weight: 600; font-size: 14px; min-width: 116px;
+}
+.play svg { width: 14px; height: 14px; fill: currentColor; }
+.scrub { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 2px; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+.scrub .ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; gap: 2px; }
+.seg button { background: transparent; border: 0; border-radius: 999px; padding: 5px 11px; font-size: 13px; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--land); font-weight: 600; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px; background: transparent; border: 1px solid var(--rule);
+  border-radius: 999px; padding: 4px 11px 4px 8px; font-size: 13px; color: var(--ink);
+}
+.chip .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.chip .pct { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { border-color: var(--ink); background: var(--panel); font-weight: 600; }
+.chip.dim { opacity: 0.45; }
+.hint { font-size: 12px; color: var(--muted); }
+
+section.panel { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--rule); padding-top: 18px; }
+.tl { position: relative; }
+.tl canvas { display: block; width: 100%; cursor: ew-resize; touch-action: pan-y; }
+
+.two { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px 40px; }
+.two > div { min-width: 0; }
+.bars { display: flex; flex-direction: column; gap: 7px; }
+.bar { display: grid; grid-template-columns: minmax(120px, 15.5em) 1fr 4.6em; align-items: center; gap: 10px; font-size: 13.5px; }
+.bar .nm { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.bar .nm span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.bar .track { position: relative; height: 12px; }
+.bar .track::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--rule); }
+.bar .fill { position: absolute; top: 0; height: 12px; border-radius: 2px; transition: left .25s, width .25s; }
+.bar .val { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.movers { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; font-size: 13.5px; }
+.movers ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.movers li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
+.movers li span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.movers li span:last-child { font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; }
+.movers .t { font-weight: 600; font-variant-numeric: normal; color: var(--ink); }
+
+details { border-top: 1px solid var(--rule); padding-top: 14px; }
+summary { cursor: pointer; font-family: var(--display); font-weight: 600; font-size: 20px; }
+.tablewrap { overflow-x: auto; margin-top: 12px; max-height: 560px; overflow-y: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 720px; }
+th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--rule); }
+th { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--land); }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+td .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 7px; }
+td .tk { color: var(--muted); font-size: 12px; margin-left: 6px; }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px 32px; font-size: 13.5px; color: var(--ink-2); }
+.notes > div { min-width: 0; }
+.notes h3 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+.notes p { margin: 0 0 8px; }
+a { color: var(--accent); }
+
+@media (max-width: 760px) {
+  .two { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  body { padding-block: 18px 40px; }
+  .stat .v { font-size: 18px; }
+  .caption { flex-direction: column; gap: 2px; }
+  .caption p { font-size: 16px; }
+  .bar { grid-template-columns: minmax(96px, 9em) 1fr 4.2em; }
+  .movers { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="eyebrow">S&amp;P 500 market value by company and sector · daily closes</div>
+    <h1>The Month <em>Delta</em></h1>
+    <p class="lede">The S&amp;P 500's total value enters as one river on the left and splits into sectors, then into the 25 largest companies and the rest of each sector. Channel width is market value. Each step is one trading day; the page keeps the latest month.</p>
+    <div class="status" id="status" role="status"><span class="dot"></span><span id="statusTxt"></span></div>
+  </header>
+
+  <div class="readout">
+    <div class="when"><small id="dow">Wednesday</small><span id="when">Sep 30</span></div>
+    <div class="stats">
+      <div class="stat"><span class="k">Total value</span><span class="v" id="sTot">–</span></div>
+      <div class="stat"><span class="k">That day</span><span class="v" id="sDay">–</span></div>
+      <div class="stat"><span class="k">Since Sep 30</span><span class="v" id="sMtd">–</span></div>
+      <div class="stat"><span class="k">Companies</span><span class="v" id="sN">–</span></div>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="delta" role="img" aria-label="River delta of S&amp;P 500 market value by company"></canvas>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+
+  <div class="caption"><span class="cy" id="capY"></span><p id="capT"></p></div>
+
+  <div class="controls">
+    <button class="play" id="play" type="button" aria-label="Play">
+      <svg viewBox="0 0 14 14" id="playIcon"><path d="M3 1.5v11l9-5.5z"/></svg><span id="playTxt">Play</span>
+    </button>
+    <div class="scrub">
+      <input type="range" id="scrub" min="0" max="22" step="1" value="0" aria-label="Trading day">
+      <div class="ends" id="ends"></div>
+    </div>
+    <div class="seg" role="group" aria-label="Playback speed">
+      <button type="button" data-speed="0.5" aria-pressed="false">Slow</button>
+      <button type="button" data-speed="1" aria-pressed="true">1 day/s</button>
+      <button type="button" data-speed="2.5" aria-pressed="false">Fast</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="legend" id="legend"></div>
+    <div class="hint" style="margin-top:6px">Select a sector to highlight its channels. Hover or tap any channel for its numbers. Space plays or pauses.</div>
+  </div>
+
+  <section class="panel">
+    <div>
+      <h2>Day by day</h2>
+      <p class="sub">Total S&amp;P 500 value at each close, and how much it changed that day. Click or drag to move through the month.</p>
+    </div>
+    <div class="tl" id="tlWrap">
+      <canvas id="tl" aria-label="Total S&amp;P 500 value and daily change, Sep 30 to Oct 30, 2026"></canvas>
+      <div class="tip" id="tip2" hidden></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div>
+      <h2>Month so far</h2>
+      <p class="sub">Change in value from the Sep 30 close to <span id="mtdDay">the day shown</span>.</p>
+    </div>
+    <div class="two">
+      <div>
+        <h3 class="k">By sector</h3>
+        <div class="bars" id="secBars"></div>
+      </div>
+      <div>
+        <h3 class="k">Biggest moves in dollars, any S&amp;P 500 company</h3>
+        <div class="movers">
+          <ol id="gainers"></ol>
+          <ol id="losers"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div>
+      <h2>Week by week</h2>
+      <p class="sub">Change in market value over each trading week, measured from the previous week's last close. The first week starts from the <span id="wkBase">first</span> close. The outlined column is the week the delta is showing.</p>
+    </div>
+    <div class="tablewrap wk"><table id="wkTable"></table></div>
+  </section>
+
+  <details id="tableBox">
+    <summary>All <span id="tabN">499</span> companies on <span id="tabDay">Oct 30</span></summary>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Company</th><th>Sector</th><th class="n">Market value</th><th class="n">Share</th><th class="n">That day</th><th class="n">Since Sep 30</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <section class="notes">
+    <div>
+      <h3>Data</h3>
+      <p>Daily closing prices from Yahoo Finance's chart data, split-adjusted. Shares outstanding from SEC EDGAR: the cover page of each company's latest 10-Q or 10-K, or weighted-average shares where the cover page was missing. Market value = shares × close.</p>
+      <p>Companies are the S&amp;P 500 members listed on Wikipedia (checked <span id="membersAsOf">weekly</span>), with their GICS sectors. The page keeps one month of trading days; older days are dropped at each update.</p>
+    </div>
+    <div>
+      <h3>How companies are counted</h3>
+      <p>Each company is counted once with all share classes (Alphabet, Fox and News Corp each have two listings in the index). Berkshire's A and B shares are priced separately. Visa's class B and C shares are converted at approximate rates.</p>
+      <p>Share counts are held fixed through the month, so buybacks and new issuance during the month aren't reflected.</p>
+    </div>
+    <div>
+      <h3>Left out</h3>
+      <p id="leftOut">Nothing.</p>
+      <p>This is full market value, not the float-adjusted value S&amp;P uses for index weights, so the biggest founder-held companies look a bit larger here than their index weight.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+/*LIVE*/
+/*DATA*/
+</script>
+<script>
+(() => {
+'use strict';
+const D = DATA, ND = D.days.length, CO = D.companies;
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const dObj = k => { const [y, m, d] = D.days[k].split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+const dLabel = k => { const d = dObj(k); return MON[d.getUTCMonth()] + ' ' + d.getUTCDate(); };
+const dDow = k => DOW[dObj(k).getUTCDay()];
+
+const GROUPS = [
+  { name: 'Technology', c: 1, sectors: ['Information Technology'] },
+  { name: 'Energy', c: 2, sectors: ['Energy'] },
+  { name: 'Health care', c: 3, sectors: ['Health Care'] },
+  { name: 'Industry & materials', c: 4, sectors: ['Industrials', 'Materials'] },
+  { name: 'Consumer discretionary', c: 5, sectors: ['Consumer Discretionary'] },
+  { name: 'Communication & utilities', c: 6, sectors: ['Communication Services', 'Utilities'] },
+  { name: 'Consumer staples', c: 7, sectors: ['Consumer Staples'] },
+  { name: 'Finance & real estate', c: 8, sectors: ['Financials', 'Real Estate'] }
+];
+const REST_NAME = ['Other technology', 'Other energy', 'Other health care', 'Other industry & materials', 'Other consumer discretionary', 'Other communication & utilities', 'Other consumer staples', 'Other finance & real estate'];
+const REST_SHORT = ['Other tech', 'Other energy', 'Other health', 'Other industry', 'Other discretionary', 'Other comm. & util.', 'Other staples', 'Other finance'];
+const NAME_FIX = { GOOGL: 'Alphabet', AAPL: 'Apple', TSLA: 'Tesla', LLY: 'Eli Lilly', V: 'Visa', PLTR: 'Palantir', CVX: 'Chevron', KO: 'Coca-Cola', ORCL: 'Oracle', CAT: 'Caterpillar', AMD: 'AMD', MU: 'Micron', XOM: 'ExxonMobil', META: 'Meta', 'BRK.B': 'Berkshire Hathaway', JNJ: 'Johnson & Johnson', JPM: 'JPMorgan Chase' };
+const clean = c => NAME_FIX[c.s] || c.n.replace(/\s*\(Class [A-Z]\)/, '').replace(/,? Inc\.?$/, '').replace(/ Corporation$/, '').replace(/ Company \(The\)$/, '').replace(/^(.*) \((.*)\)$/, '$2 $1');
+const gOf = sector => GROUPS.findIndex(g => g.sectors.includes(sector));
+CO.forEach(c => { c.gi = gOf(c.g); c.label = clean(c); });
+if (CO.some(c => c.gi < 0)) console.warn('unmapped sector', CO.filter(c => c.gi < 0).map(c => c.g));
+
+// totals
+const TOT = new Float64Array(ND);
+for (let k = 0; k < ND; k++) TOT[k] = CO.reduce((a, c) => a + c.v[k], 0);
+const MAXTOT = Math.max(...TOT);
+
+// channels: 24 largest companies + the largest company of any group without one, then "rest" per group
+const avg = c => c.v.reduce((a, b) => a + b, 0) / ND;
+const ranked = CO.slice().sort((a, b) => avg(b) - avg(a));
+const named = new Set(ranked.slice(0, 24));
+GROUPS.forEach((g, gi) => { if (![...named].some(c => c.gi === gi)) named.add(ranked.find(c => c.gi === gi)); });
+const CH = [];
+GROUPS.forEach((g, gi) => {
+  [...named].filter(c => c.gi === gi).sort((a, b) => avg(b) - avg(a)).forEach(c => CH.push({ name: c.label, short: c.s, gi, members: [c], rest: false }));
+  const rest = CO.filter(c => c.gi === gi && !named.has(c)).sort((a, b) => avg(b) - avg(a));
+  CH.push({ name: REST_NAME[gi], short: REST_SHORT[gi], gi, members: rest, rest: true });
+});
+CH.forEach((ch, i) => { ch.v = Array.from({ length: ND }, (_, k) => ch.members.reduce((a, c) => a + c.v[k], 0)); ch.k = CH.slice(0, i).filter(x => x.gi === ch.gi).length; });
+const gVal = (gi, k) => CH.reduce((a, ch) => a + (ch.gi === gi ? ch.v[k] : 0), 0);
+
+function money(b) { // b in $ billions
+  const a = Math.abs(b);
+  if (a >= 1000) return '$' + (b / 1000).toFixed(a >= 10000 ? 1 : 2) + 'T';
+  if (a >= 10) return '$' + b.toFixed(0) + 'B';
+  if (a >= 1) return '$' + b.toFixed(1) + 'B';
+  return '$' + (b * 1000).toFixed(0) + 'M';
+}
+const sgnMoney = b => (b >= 0 ? '+' : '−') + money(Math.abs(b));
+const pctS = (x, d = 1) => (x >= 0 ? '+' : '−') + Math.abs(x * 100).toFixed(d) + '%';
+const arrow = x => (x >= 0 ? '▲' : '▼') + Math.abs(x * 100).toFixed(1) + '%';
+
+// ---------- theme ----------
+let TH = {};
+function hexRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+const lum = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+const MIX = [0, 0.24, 0.12, 0.32, 0.06, 0.28, 0.17, 0.36, 0.09];
+function shade(hex, k, rest) {
+  const c = hexRgb(hex), a = (rest ? 0.42 : MIX[k % MIX.length]) * (TH.dark ? 0.55 : 1), tgt = TH.dark ? [6, 9, 8] : [255, 255, 255];
+  return 'rgb(' + c.map((v, i) => Math.round(v + (tgt[i] - v) * a)).join(',') + ')';
+}
+function rgba(color, a) { if (color.startsWith('#')) { const c = hexRgb(color); return `rgba(${c[0]},${c[1]},${c[2]},${a})`; } return color.replace('rgb(', 'rgba(').replace(')', `,${a})`); }
+function readTheme() {
+  const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+  TH = { land: g('--land'), sea: g('--sea'), sea2: g('--sea-2'), ink: g('--ink'), ink2: g('--ink-2'), muted: g('--muted'), rule: g('--rule'),
+    particle: g('--particle'), up: g('--up'), down: g('--down'), s: [] };
+  for (let i = 0; i <= 8; i++) TH.s[i] = g('--s' + i);
+  TH.dark = lum(hexRgb(TH.land)) < 0.3;
+  CH.forEach(ch => ch.color = shade(TH.s[GROUPS[ch.gi].c], ch.k, ch.rest));
+  GROUPS.forEach(gr => gr.color = TH.s[gr.c]);
+  tlDirty = true;
+}
+
+// ---------- state ----------
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let T = reduced ? ND - 1 : 0, playing = false, speed = 1, sel = -1, tlDirty = true, lastShown = -1;
+
+// ---------- delta stage ----------
+const stage = document.getElementById('stage'), cv = document.getElementById('delta'), ctx = cv.getContext('2d');
+const tip = document.getElementById('tip');
+let W = 800, H = 600, DPR = 1, narrow = false;
+function sizeStage() {
+  W = stage.clientWidth; narrow = W < 640;
+  H = narrow ? Math.round(Math.max(560, Math.min(660, W * 1.5))) : Math.round(Math.max(560, Math.min(700, W * 0.6)));
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.height = H + 'px';
+}
+const rnd = (() => { let s = 11; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+const MEANDER = CH.map(() => ({ a: 2 + rnd() * 5, f: 0.8 + rnd() * 1.1, p: rnd() * 6.28 }));
+const GMEANDER = GROUPS.map(() => ({ a: 3 + rnd() * 6, f: 0.6 + rnd() * 0.8, p: rnd() * 6.28 }));
+const smooth = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+function bez(xa, ya, xb, yb, n, m, out) {
+  const c1 = xa + (xb - xa) * 0.45, c2 = xb - (xb - xa) * 0.45;
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, u = 1 - t;
+    const x = u * u * u * xa + 3 * u * u * t * c1 + 3 * u * t * t * c2 + t * t * t * xb;
+    const y = u * u * u * ya + 3 * u * u * t * ya + 3 * u * t * t * yb + t * t * t * yb;
+    const dx = 3 * u * u * (c1 - xa) + 6 * u * t * (c2 - c1) + 3 * t * t * (xb - c2), dy = 6 * u * t * (yb - ya);
+    const L = Math.hypot(dx, dy) || 1, s = Math.sin(Math.PI * t), off = m ? m.a * s * s * Math.sin(2 * Math.PI * m.f * t + m.p) : 0;
+    out.push([x - dy / L * off, y + dx / L * off]);
+  }
+  return out;
+}
+function normals(pts) {
+  return pts.map((p, i) => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; return [-dy / L, dx / L]; });
+}
+let RIB = [], LABELS = [], GEOM = {};
+function layout(tf) {
+  const k0 = Math.floor(tf), k1 = Math.min(ND - 1, k0 + 1), f = tf - k0;
+  const v = CH.map(ch => ch.v[k0] * (1 - f) + ch.v[k1] * f);
+  const tot = v.reduce((a, b) => a + b, 0);
+  const labW = narrow ? Math.min(150, W * 0.4) : Math.min(290, Math.max(220, W * 0.24));
+  const xm = W - labW, xs1 = xm * 0.17, xs2 = xm * 0.5, padY = 16;
+  const Lmin = narrow ? 13.5 : 15.5;
+  const Wt = Math.max(90, Math.min(narrow ? 170 : 230, H * (narrow ? 0.27 : 0.33)));
+  const FL = 1.35, Hc = H * 0.52;
+  const w = v.map(x => x / MAXTOT * Wt);
+  const trunkW = w.reduce((a, b) => a + b, 0);
+  let cum = -trunkW / 2; const offA = [];
+  CH.forEach((ch, i) => { offA[i] = cum + w[i] / 2; cum += w[i]; });
+  const gW = GROUPS.map(() => 0), gTop = GROUPS.map(() => null);
+  CH.forEach((ch, i) => { gW[ch.gi] += w[i]; if (gTop[ch.gi] === null) gTop[ch.gi] = offA[i] - w[i] / 2; });
+  const gOff = GROUPS.map((g, gi) => gTop[gi] + gW[gi] / 2);
+  const GAPW = 2.5, GAPG = narrow ? 6 : 9;
+  const slot = w.map(x => Math.max(Lmin, x * FL) + GAPW);
+  const S = slot.reduce((a, b) => a + b, 0) + GAPG * (GROUPS.length - 1), avail = H - 2 * padY;
+  let scale = 1, extraG = GAPG;
+  if (S > avail) scale = avail / S; else extraG = GAPG + (avail - S) / (GROUPS.length + 1);
+  const mY = []; let y = padY + (S > avail ? 0 : extraG - GAPG);
+  CH.forEach((ch, i) => { if (i > 0 && CH[i - 1].gi !== ch.gi) y += extraG * scale; mY[i] = y + slot[i] * scale / 2; y += slot[i] * scale; });
+  const gY = GROUPS.map((g, gi) => {
+    const idx = CH.map((ch, i) => ch.gi === gi ? i : -1).filter(i => i >= 0);
+    return 0.62 * (mY[idx[0]] + mY[idx[idx.length - 1]]) / 2 + 0.38 * (Hc + gOff[gi]);
+  });
+  const trunk = bez(-12, Hc, xs1, Hc, 14, { a: 7, f: 1, p: 0.6 }, []), tN = normals(trunk);
+  const gPts = GROUPS.map((g, gi) => bez(xs1, Hc + gOff[gi], xs2, gY[gi], 28, GMEANDER[gi], [])), gN = gPts.map(normals);
+  RIB = CH.map((ch, i) => {
+    const pts = [], hw = [], half = Math.max(0.45, w[i] / 2 - 0.55);
+    trunk.forEach((p, k) => { if (k < trunk.length - 1) { pts.push([p[0] + tN[k][0] * offA[i], p[1] + tN[k][1] * offA[i]]); hw.push(half); } });
+    const og = offA[i] - gOff[ch.gi], gp = gPts[ch.gi];
+    gp.forEach((p, k) => { if (k < gp.length - 1) { pts.push([p[0] + gN[ch.gi][k][0] * og, p[1] + gN[ch.gi][k][1] * og]); hw.push(half); } });
+    const c = bez(xs2, gp[gp.length - 1][1] + og, xm, mY[i], 40, MEANDER[i], []);
+    c.forEach((p, k) => { pts.push(p); hw.push(half * (1 + (FL - 1) * smooth(0.6, 1, k / 40))); });
+    const nr = normals(pts), path = new Path2D();
+    path.moveTo(pts[0][0] + nr[0][0] * hw[0], pts[0][1] + nr[0][1] * hw[0]);
+    for (let k = 1; k < pts.length; k++) path.lineTo(pts[k][0] + nr[k][0] * hw[k], pts[k][1] + nr[k][1] * hw[k]);
+    for (let k = pts.length - 1; k >= 0; k--) path.lineTo(pts[k][0] - nr[k][0] * hw[k], pts[k][1] - nr[k][1] * hw[k]);
+    path.closePath();
+    const len = [0]; for (let k = 1; k < pts.length; k++) len.push(len[k - 1] + Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]));
+    return { ch, i, pts, nr, hw, path, len, w: w[i], val: v[i], mouth: [xm, mY[i]] };
+  });
+  const ly = mY.slice();
+  for (let i = 1; i < ly.length; i++) ly[i] = Math.max(ly[i], ly[i - 1] + Lmin);
+  const maxY = H - padY + 4;
+  if (ly[ly.length - 1] > maxY) { ly[ly.length - 1] = maxY; for (let i = ly.length - 2; i >= 0; i--) ly[i] = Math.min(ly[i], ly[i + 1] - Lmin); }
+  LABELS = CH.map((ch, i) => ({ i, y: ly[i], my: mY[i] }));
+  GEOM = { xm, Wt, Hc, Lmin, tot, trunkW };
+}
+const PART = CH.map(() => []);
+function syncParticles() {
+  RIB.forEach((r, i) => {
+    const want = Math.min(70, Math.round(1 + r.w * (narrow ? 0.55 : 0.8))), arr = PART[i];
+    while (arr.length < want) arr.push({ s: Math.random(), u: (Math.random() - 0.5) * 0.8, v: 0.8 + Math.random() * 0.5, r: 0.7 + Math.random() * 0.8 });
+    if (arr.length > want) arr.length = want;
+  });
+}
+function at(r, d) {
+  const L = r.len; let lo = 0, hi = L.length - 1;
+  while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (L[mid] < d) lo = mid; else hi = mid; }
+  const f = (d - L[lo]) / ((L[hi] - L[lo]) || 1), p = r.pts[lo], q = r.pts[hi];
+  return [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f, r.nr[lo], r.hw[lo] + (r.hw[hi] - r.hw[lo]) * f];
+}
+function drawStage(dt) {
+  layout(T);
+  const c = ctx; c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const { xm } = GEOM, kd = Math.round(T);
+  c.fillStyle = TH.land; c.fillRect(0, 0, W, H);
+  c.beginPath(); c.moveTo(W, 0); c.lineTo(xm, 0);
+  for (let y = 0; y <= H; y += 8) c.lineTo(xm - 2 + Math.sin(y * 0.045) * 3 + Math.sin(y * 0.013 + 1) * 4, y);
+  c.lineTo(W, H); c.closePath();
+  const sg = c.createLinearGradient(xm, 0, W, 0); sg.addColorStop(0, TH.sea); sg.addColorStop(1, TH.sea2);
+  c.fillStyle = sg; c.fill();
+  c.strokeStyle = TH.rule; c.lineWidth = 1; c.beginPath();
+  for (let y = 0; y <= H; y += 8) { const x = xm + 12 + Math.sin(y * 0.04 + 2) * 3 + Math.sin(y * 0.011) * 5; y ? c.lineTo(x, y) : c.moveTo(x, y); }
+  c.stroke();
+  RIB.forEach(r => {
+    if (r.w < 0.6) return;
+    const [x, y] = r.mouth, rad = 10 + r.w * 1.1, dim = sel >= 0 && r.ch.gi !== sel;
+    const g = c.createRadialGradient(x, y, 0, x, y, rad);
+    g.addColorStop(0, rgba(r.ch.color, dim ? 0.08 : 0.42)); g.addColorStop(1, rgba(r.ch.color, 0));
+    c.fillStyle = g; c.beginPath(); c.ellipse(x, y, rad, Math.max(3, r.w * 0.75 + 4), 0, -Math.PI / 2, Math.PI / 2); c.fill();
+  });
+  RIB.forEach(r => { c.globalAlpha = sel >= 0 && r.ch.gi !== sel ? 0.22 : 1; c.fillStyle = r.ch.color; c.fill(r.path); });
+  c.globalAlpha = 1;
+  if (!reduced) {
+    syncParticles(); c.fillStyle = TH.particle;
+    RIB.forEach((r, i) => {
+      if (sel >= 0 && r.ch.gi !== sel) return;
+      const total = r.len[r.len.length - 1];
+      PART[i].forEach(p => {
+        p.s += (dt * 34 * p.v) / total; if (p.s > 1) { p.s -= 1; p.u = (Math.random() - 0.5) * 0.8; }
+        const [x, y, n, hw] = at(r, p.s * total);
+        if (hw < 1.2) return;
+        c.beginPath(); c.arc(x + n[0] * p.u * hw * 1.8, y + n[1] * p.u * hw * 1.8, p.r, 0, 6.283); c.fill();
+      });
+    });
+  }
+  c.font = `italic 500 ${narrow ? 13 : 15}px Spectral, Georgia, serif`; c.fillStyle = TH.ink2; c.textBaseline = 'alphabetic';
+  c.fillText('S&P 500', 10, GEOM.Hc - GEOM.trunkW / 2 - 12);
+  // mouth labels: name, value, that day's change
+  const fs = narrow ? 11 : 13;
+  const nameFont = `italic 400 ${fs}px Spectral, Georgia, serif`, numFont = `500 ${fs - 1.5}px "Public Sans", system-ui, sans-serif`;
+  const lx = xm + (narrow ? 14 : 22);
+  LABELS.forEach(L => {
+    const r = RIB[L.i], ch = r.ch, dim = sel >= 0 && ch.gi !== sel;
+    c.globalAlpha = dim ? 0.35 : 1;
+    if (Math.abs(L.y - L.my) > 2) { c.strokeStyle = TH.muted; c.lineWidth = 0.75; c.beginPath(); c.moveTo(xm + 3, L.my); c.lineTo(lx - 4, L.y); c.stroke(); }
+    const day = kd > 0 ? ch.v[kd] / ch.v[kd - 1] - 1 : null;
+    const num = (narrow ? '' : money(ch.v[kd]) + '  ') + (day === null ? '' : arrow(day));
+    const nm = narrow ? (ch.rest ? ch.short : ch.short) : ch.name;
+    c.font = numFont; const nw = c.measureText(num).width;
+    c.font = nameFont; let text = nm; const room = W - lx - nw - 12;
+    while (c.measureText(text).width > room && text.length > 3) text = text.slice(0, -2) + '…';
+    c.fillStyle = TH.ink; c.textBaseline = 'middle'; c.fillText(text, lx, L.y);
+    const tw = c.measureText(text).width;
+    c.font = numFont; c.fillStyle = TH.ink2; c.fillText(num, lx + tw + 6, L.y + 0.5);
+    L.box = [lx - 4, L.y - GEOM.Lmin / 2, W - lx + 4, GEOM.Lmin];
+  });
+  c.globalAlpha = 1;
+  // scale bar: what $1 trillion looks like
+  const sb = GEOM.Wt * 1000 / MAXTOT, bx = 14, by = H - 18;
+  c.strokeStyle = TH.ink2; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(bx, by); c.lineTo(bx, by - sb); c.moveTo(bx - 3, by); c.lineTo(bx + 3, by); c.moveTo(bx - 3, by - sb); c.lineTo(bx + 3, by - sb); c.stroke();
+  c.font = `500 11px "Public Sans", system-ui, sans-serif`; c.fillStyle = TH.ink2; c.textBaseline = 'middle';
+  c.fillText('Channel width: this much = $1 trillion', bx + 9, by - sb / 2);
+}
+let hoverStage = null;
+function hitStage(x, y) {
+  for (const L of LABELS) { const b = L.box; if (b && x >= b[0] && x <= b[0] + b[2] && y >= b[1] && y <= b[1] + b[3]) return L.i; }
+  for (let i = RIB.length - 1; i >= 0; i--) if (ctx.isPointInPath(RIB[i].path, x * DPR, y * DPR)) return i;
+  return -1;
+}
+function showStageTip() {
+  if (!hoverStage) { tip.hidden = true; return; }
+  const i = hitStage(hoverStage.x, hoverStage.y);
+  if (i < 0) { tip.hidden = true; stage.style.cursor = ''; return; }
+  stage.style.cursor = 'pointer';
+  const ch = CH[i], k = Math.round(T), v = ch.v[k];
+  const day = k > 0 ? v - ch.v[k - 1] : null;
+  const top = ch.rest ? ch.members.slice().sort((a, b) => b.v[k] - a.v[k]).slice(0, 4).map(c => c.label).join(', ') : '';
+  const c0 = ch.members[0];
+  tip.innerHTML = `<div class="tn"><span class="sw" style="background:${ch.color}"></span>${ch.name}</div>
+    <div class="tg">${ch.rest ? ch.members.length + ' companies · ' + GROUPS[ch.gi].name : c0.s + ' · ' + c0.sub}</div>
+    <div class="row"><span>Value at ${dLabel(k)} close</span><span>${money(v)}</span></div>
+    <div class="row"><span>Share of S&amp;P 500</span><span>${(v / TOT[k] * 100).toFixed(2)}%</span></div>
+    ${day === null ? '' : `<div class="row"><span>That day</span><span>${sgnMoney(day)} (${pctS(day / ch.v[k - 1])})</span></div>`}
+    <div class="row"><span>Since Sep 30</span><span>${sgnMoney(v - ch.v[0])} (${pctS(v / ch.v[0] - 1)})</span></div>
+    ${top ? `<div class="mem">Largest: ${top}</div>` : ''}`;
+  tip.hidden = false;
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let x = hoverStage.x + 16, y = hoverStage.y + 16;
+  if (x + tw > W - 6) x = hoverStage.x - tw - 16; if (x < 6) x = 6;
+  if (y + th > H - 6) y = Math.max(6, hoverStage.y - th - 16);
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+stage.addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); hoverStage = { x: e.clientX - r.left, y: e.clientY - r.top }; showStageTip(); });
+stage.addEventListener('pointerdown', e => { const r = cv.getBoundingClientRect(); hoverStage = { x: e.clientX - r.left, y: e.clientY - r.top }; showStageTip(); });
+stage.addEventListener('pointerleave', () => { hoverStage = null; tip.hidden = true; });
+
+// ---------- day-by-day charts ----------
+const tlWrap = document.getElementById('tlWrap'), tl = document.getElementById('tl'), tctx = tl.getContext('2d'), tip2 = document.getElementById('tip2');
+let TW = 800, H1 = 170, H2 = 110, GAP = 46; const PAD = { l: 58, r: 14, t: 26, b: 24 };
+let tlOff = null;
+const tx = k => PAD.l + 10 + (k / (ND - 1)) * (TW - PAD.l - PAD.r - 20);
+const kFromX = x => Math.max(0, Math.min(ND - 1, (x - PAD.l - 10) / (TW - PAD.l - PAD.r - 20) * (ND - 1)));
+const VMIN = Math.floor(Math.min(...TOT) / 500) * 500, VMAX = Math.ceil(Math.max(...TOT) / 500) * 500;
+const y1 = v => PAD.t + H1 - (v - VMIN) / (VMAX - VMIN) * H1;
+const DCH = Array.from({ length: ND }, (_, k) => k ? TOT[k] - TOT[k - 1] : 0);
+const DMAX = Math.ceil(Math.max(...DCH.map(Math.abs)) / 250) * 250;
+const y2 = d => PAD.t + H1 + GAP + H2 / 2 - d / DMAX * (H2 / 2);
+function sizeTL() {
+  TW = tlWrap.clientWidth; H1 = TW < 640 ? 140 : 170; H2 = TW < 640 ? 96 : 110;
+  const h = PAD.t + H1 + GAP + H2 + PAD.b;
+  tl.width = Math.round(TW * DPR); tl.height = Math.round(h * DPR); tl.style.height = h + 'px'; tlDirty = true;
+}
+function renderTLBase() {
+  const h = tl.height / DPR;
+  tlOff = document.createElement('canvas'); tlOff.width = tl.width; tlOff.height = tl.height;
+  const c = tlOff.getContext('2d'); c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  c.fillStyle = TH.land; c.fillRect(0, 0, TW, h);
+  const font = '500 11px "Public Sans", system-ui, sans-serif';
+  // chart 1: total value
+  c.font = '500 12px "Public Sans", system-ui, sans-serif'; c.fillStyle = TH.ink2; c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  c.fillText('Total value at close ($ trillions)', PAD.l, PAD.t - 12);
+  c.font = font; c.textAlign = 'right'; c.textBaseline = 'middle';
+  for (let v = VMIN; v <= VMAX + 1; v += 500) {
+    const y = y1(v); c.strokeStyle = TH.rule; c.lineWidth = 1; c.beginPath(); c.moveTo(PAD.l, y); c.lineTo(TW - PAD.r, y); c.stroke();
+    c.fillStyle = TH.muted; c.fillText('$' + (v / 1000).toFixed(1) + 'T', PAD.l - 8, y);
+  }
+  const grad = c.createLinearGradient(0, PAD.t, 0, PAD.t + H1); grad.addColorStop(0, rgba(TH.up, 0.18)); grad.addColorStop(1, rgba(TH.up, 0));
+  c.beginPath(); for (let k = 0; k < ND; k++) { const x = tx(k), y = y1(TOT[k]); k ? c.lineTo(x, y) : c.moveTo(x, y); }
+  c.lineTo(tx(ND - 1), PAD.t + H1); c.lineTo(tx(0), PAD.t + H1); c.closePath(); c.fillStyle = grad; c.fill();
+  c.strokeStyle = TH.up; c.lineWidth = 2; c.lineJoin = 'round'; c.beginPath();
+  for (let k = 0; k < ND; k++) { const x = tx(k), y = y1(TOT[k]); k ? c.lineTo(x, y) : c.moveTo(x, y); } c.stroke();
+  // chart 2: daily change bars
+  const top2 = PAD.t + H1 + GAP;
+  c.font = '500 12px "Public Sans", system-ui, sans-serif'; c.fillStyle = TH.ink2; c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  c.fillText('Change from the previous close ($ billions)', PAD.l, top2 - 12);
+  c.font = font; c.textAlign = 'right'; c.textBaseline = 'middle';
+  [-DMAX, -DMAX / 2, 0, DMAX / 2, DMAX].forEach(d => {
+    const y = y2(d); c.strokeStyle = d === 0 ? TH.muted : TH.rule; c.lineWidth = 1; c.beginPath(); c.moveTo(PAD.l, y); c.lineTo(TW - PAD.r, y); c.stroke();
+    c.fillStyle = TH.muted; c.fillText((d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(0), PAD.l - 8, y);
+  });
+  const bw = Math.max(4, Math.min(22, (TW - PAD.l - PAD.r) / ND * 0.62));
+  for (let k = 1; k < ND; k++) {
+    const d = DCH[k], x = tx(k) - bw / 2, y0 = y2(0), y = y2(d), hgt = Math.abs(y - y0);
+    c.fillStyle = d >= 0 ? TH.up : TH.down;
+    c.beginPath(); c.roundRect ? c.roundRect(x, Math.min(y, y0), bw, Math.max(1, hgt), d >= 0 ? [3, 3, 0, 0] : [0, 0, 3, 3]) : c.rect(x, Math.min(y, y0), bw, Math.max(1, hgt)); c.fill();
+  }
+  // date axis: Sep 30 and each Monday
+  c.font = font; c.fillStyle = TH.muted; c.textAlign = 'center'; c.textBaseline = 'top';
+  for (let k = 0; k < ND; k++) if (k === 0 || dObj(k).getUTCDay() === 1) c.fillText(dLabel(k), tx(k), top2 + H2 + 8);
+  tlDirty = false;
+}
+let hoverTL = null;
+function drawTL() {
+  if (tlDirty || !tlOff) renderTLBase();
+  const c = tctx; c.setTransform(1, 0, 0, 1, 0, 0); c.drawImage(tlOff, 0, 0); c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const k = Math.round(T), x = tx(T);
+  c.strokeStyle = TH.ink; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x, PAD.t - 4); c.lineTo(x, PAD.t + H1 + GAP + H2); c.stroke();
+  const yv = y1(TOT[k] + (T - k) * 0);
+  c.fillStyle = TH.ink; c.beginPath(); c.arc(tx(k), y1(TOT[k]), 4.5, 0, 6.283); c.fill(); c.strokeStyle = TH.land; c.lineWidth = 2; c.stroke();
+  if (hoverTL) { const hx = tx(Math.round(hoverTL.k)); c.strokeStyle = TH.muted; c.lineWidth = 1; c.beginPath(); c.moveTo(hx, PAD.t); c.lineTo(hx, PAD.t + H1 + GAP + H2); c.stroke(); }
+}
+function showTLTip() {
+  if (!hoverTL) { tip2.hidden = true; return; }
+  const k = Math.round(hoverTL.k);
+  tip2.innerHTML = `<div class="tn">${dDow(k)}, ${dLabel(k)}</div>
+    <div class="row"><span>Total value</span><span>${money(TOT[k])}</span></div>
+    ${k ? `<div class="row"><span>That day</span><span>${sgnMoney(DCH[k])} (${pctS(DCH[k] / TOT[k - 1], 2)})</span></div>` : ''}
+    <div class="row"><span>Since Sep 30</span><span>${pctS(TOT[k] / TOT[0] - 1, 2)}</span></div>`;
+  tip2.hidden = false;
+  const tw = tip2.offsetWidth; let x = hoverTL.x + 14; if (x + tw > TW - 4) x = hoverTL.x - tw - 14; if (x < 4) x = 4;
+  tip2.style.left = x + 'px'; tip2.style.top = '4px';
+}
+let dragging = false;
+function seekFromTL(e) { const r = tl.getBoundingClientRect(); setT(Math.round(kFromX(e.clientX - r.left)), true); }
+tl.addEventListener('pointerdown', e => { dragging = true; tl.setPointerCapture(e.pointerId); seekFromTL(e); });
+tl.addEventListener('pointermove', e => { const r = tl.getBoundingClientRect(), x = e.clientX - r.left; hoverTL = { x, k: kFromX(x) }; showTLTip(); if (dragging) seekFromTL(e); requestDraw(); });
+tl.addEventListener('pointerup', () => { dragging = false; });
+tl.addEventListener('pointerleave', () => { hoverTL = null; tip2.hidden = true; requestDraw(); });
+
+// ---------- DOM ----------
+const $ = id => document.getElementById(id);
+const scrub = $('scrub'); scrub.max = ND - 1;
+$('ends').innerHTML = [0, ...Array.from({ length: ND }, (_, k) => k).filter(k => k && dObj(k).getUTCDay() === 1), ND - 1].filter((v, i, a) => a.indexOf(v) === i).map(k => `<span>${dLabel(k)}</span>`).join('');
+$('sN').textContent = CO.length;
+$('eyebrow').textContent = 'S&P 500 market value by company and sector · ' + dLabel(0) + ' to ' + dLabel(ND - 1) + ', ' + dObj(ND - 1).getUTCFullYear() + ' · daily closes';
+if (D.meta && D.meta.membersAsOf) { const m = D.meta.membersAsOf.split('-').map(Number); $('membersAsOf').textContent = 'as of ' + MON[m[1] - 1] + ' ' + m[2] + ', ' + m[0]; }
+$('leftOut').textContent = (D.notes && D.notes.length) ? D.notes.join('. ') + '.' : 'Nothing: every member had a share count and prices.';
+
+// ---------- status: look for new trading days when served by the local helper ----------
+const stEl = $('status'), stTxt = $('statusTxt');
+function setStatus(txt, cls) { stTxt.textContent = txt; stEl.className = 'status' + (cls ? ' ' + cls : ''); }
+const through = 'Data through the ' + dLabel(ND - 1) + ' close';
+if (window.LIVE) {
+  setStatus('Checking for new trading days…', 'busy');
+  const poll = () => fetch('/api/status').then(r => r.json()).then(s => {
+    if (s.state === 'running') { setStatus(s.total ? s.message + ': ' + s.done + ' of ' + s.total : s.message + '…', 'busy'); setTimeout(poll, 700); }
+    else if (s.state === 'done') {
+      if (s.latest && s.latest !== D.days[ND - 1]) { setStatus('Added ' + s.added.length + ' new trading day' + (s.added.length === 1 ? '' : 's') + '. Reloading…', 'busy'); setTimeout(() => location.reload(), 700); }
+      else setStatus(through + '. Up to date.', 'ok');
+    }
+    else if (s.state === 'error') setStatus(through + '. Update failed: ' + s.message, 'err');
+    else setTimeout(poll, 700);
+  }).catch(() => setStatus(through + '. The local helper stopped responding.', 'err'));
+  fetch('/api/update', { method: 'POST' }).then(poll).catch(() => setStatus(through + '. The local helper is not running.', 'err'));
+} else setStatus(through + '. Snapshot; the local helper adds new days.', '');
+
+// ---------- week by week ----------
+const weekKey = k => { const d = dObj(k), back = (d.getUTCDay() + 6) % 7; return new Date(d.getTime() - back * 86400000).toISOString().slice(0, 10); };
+const WEEKS = [];
+for (let k = 1; k < ND; k++) { const key = weekKey(k); let w = WEEKS[WEEKS.length - 1]; if (!w || w.key !== key) { w = { key, days: [] }; WEEKS.push(w); } w.days.push(k); }
+WEEKS.forEach((w, i) => { w.end = w.days[w.days.length - 1]; w.prev = i ? WEEKS[i - 1].end : 0; });
+$('wkBase').textContent = dLabel(0);
+function wkCell(p, i) {
+  const mix = Math.min(42, Math.abs(p) * 420).toFixed(0);
+  return '<td class="n" data-w="' + i + '" style="background:color-mix(in srgb, var(' + (p >= 0 ? '--up' : '--down') + ') ' + mix + '%, transparent)">' + pctS(p) + '</td>';
+}
+function wkRow(label, series, cls, sw) {
+  return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><td>' + (sw ? '<span class="sw" style="background:' + sw + '"></span>' : '') + label + '</td>' +
+    WEEKS.map((w, i) => wkCell(series[w.end] / series[w.prev] - 1, i)).join('') + wkCell(series[ND - 1] / series[0] - 1, 'all') + '</tr>';
+}
+function buildWeekTable() {
+  const head = '<thead><tr><th>Week to</th>' + WEEKS.map((w, i) => '<th class="n" data-w="' + i + '">' + dLabel(w.end) + '<small>' + (w.days.length < 5 ? w.days.length + ' day' + (w.days.length > 1 ? 's' : '') : '&nbsp;') + '</small></th>').join('') +
+    '<th class="n" data-w="all">Whole period<small>' + dLabel(0) + ' to ' + dLabel(ND - 1) + '</small></th></tr></thead>';
+  const valRow = '<tr><td>S&amp;P 500 value at week end</td>' + WEEKS.map((w, i) => '<td class="n" data-w="' + i + '">' + money(TOT[w.end]) + '</td>').join('') + '<td class="n" data-w="all">' + money(TOT[ND - 1]) + '</td></tr>';
+  let body = valRow + wkRow('S&amp;P 500 change', TOT, 'total');
+  body += '<tr class="sect"><td colspan="' + (WEEKS.length + 2) + '">Sectors</td></tr>';
+  GROUPS.forEach((g, gi) => { body += wkRow(g.name, Array.from({ length: ND }, (_, k) => gVal(gi, k)), '', 'var(--s' + g.c + ')'); });
+  body += '<tr class="sect"><td colspan="' + (WEEKS.length + 2) + '">Largest companies</td></tr>';
+  CH.filter(c => !c.rest).sort((a, b) => b.v[ND - 1] - a.v[ND - 1]).forEach(ch => { body += wkRow(ch.name, ch.v, '', 'var(--s' + GROUPS[ch.gi].c + ')'); });
+  $('wkTable').innerHTML = head + '<tbody>' + body + '</tbody>';
+}
+buildWeekTable();
+let curWeek = null;
+function markWeek(k) {
+  const i = k === 0 ? null : WEEKS.findIndex(w => w.days.includes(k));
+  if (i === curWeek) return; curWeek = i;
+  document.querySelectorAll('#wkTable .cur').forEach(e => e.classList.remove('cur'));
+  if (i !== null && i >= 0) document.querySelectorAll('#wkTable [data-w="' + i + '"]').forEach(e => e.classList.add('cur'));
+}
+const legend = $('legend');
+GROUPS.forEach((g, gi) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', 'false'); b.id = 'chip' + gi;
+  b.innerHTML = `<span class="sw" style="background:var(--s${g.c})"></span><span>${g.name}</span><span class="pct" id="gp${gi}"></span>`;
+  b.addEventListener('click', () => { sel = sel === gi ? -1 : gi; GROUPS.forEach((x, j) => { const c = $('chip' + j); c.setAttribute('aria-pressed', sel === j ? 'true' : 'false'); c.classList.toggle('dim', sel >= 0 && sel !== j); }); requestDraw(); });
+  legend.appendChild(b);
+});
+const secBars = $('secBars');
+GROUPS.forEach((g, gi) => {
+  const d = document.createElement('div'); d.className = 'bar';
+  d.innerHTML = `<div class="nm"><span class="sw" style="background:var(--s${g.c})"></span><span>${g.name}</span></div><div class="track"><div class="fill" id="sb${gi}" style="background:var(--s${g.c})"></div></div><div class="val" id="sv${gi}"></div>`;
+  secBars.appendChild(d);
+});
+const SECMAX = Math.max(0.05, ...GROUPS.flatMap((g, gi) => Array.from({ length: ND }, (_, k) => Math.abs(gVal(gi, k) / gVal(gi, 0) - 1))));
+
+function caption(k) {
+  if (k === 0) return `Starting point: the Sep 30 close. ${CO.length} S&P 500 companies worth ${money(TOT[0])} together.`;
+  const ch = CO.map(c => ({ c, d: c.v[k] - c.v[k - 1], p: c.v[k] / c.v[k - 1] - 1 }));
+  const up = ch.reduce((a, b) => b.d > a.d ? b : a), dn = ch.reduce((a, b) => b.d < a.d ? b : a);
+  const pm = ch.reduce((a, b) => Math.abs(b.p) > Math.abs(a.p) ? b : a);
+  const verb = DCH[k] >= 0 ? 'gains' : 'loses';
+  let s = `The S&P 500 ${verb} ${money(Math.abs(DCH[k]))} (${pctS(DCH[k] / TOT[k - 1], 2)}). ${up.c.label} adds the most, ${sgnMoney(up.d)} (${pctS(up.p)}); ${dn.c.label} loses the most, ${sgnMoney(dn.d)} (${pctS(dn.p)}).`;
+  if (pm.c !== up.c && pm.c !== dn.c) s += ` Biggest move in percent: ${pm.c.label}, ${pctS(pm.p)}.`;
+  return s;
+}
+function updateReadout(force) {
+  const k = Math.round(T);
+  if (k === lastShown && !force) return;
+  lastShown = k;
+  $('when').textContent = dLabel(k); $('dow').textContent = dDow(k) + ' close';
+  $('sTot').textContent = money(TOT[k]);
+  $('sDay').innerHTML = k ? `${sgnMoney(DCH[k])} <small>${pctS(DCH[k] / TOT[k - 1], 2)}</small>` : '<small>start</small>';
+  $('sMtd').innerHTML = k ? `${sgnMoney(TOT[k] - TOT[0])} <small>${pctS(TOT[k] / TOT[0] - 1, 2)}</small>` : '<small>start</small>';
+  GROUPS.forEach((g, gi) => {
+    $('gp' + gi).textContent = (gVal(gi, k) / TOT[k] * 100).toFixed(1) + '%';
+    const m = gVal(gi, k) / gVal(gi, 0) - 1, w = Math.abs(m) / SECMAX * 50;
+    const f = $('sb' + gi); f.style.width = w + '%'; f.style.left = (m >= 0 ? 50 : 50 - w) + '%';
+    $('sv' + gi).textContent = pctS(m);
+  });
+  $('mtdDay').textContent = 'the ' + dLabel(k) + ' close';
+  const mv = CO.map(c => ({ c, d: c.v[k] - c.v[0], p: c.v[k] / c.v[0] - 1 })).sort((a, b) => b.d - a.d);
+  const li = x => `<li><span><span class="t">${x.c.label}</span></span><span>${sgnMoney(x.d)} · ${pctS(x.p)}</span></li>`;
+  $('gainers').innerHTML = k ? mv.slice(0, 6).map(li).join('') : '<li><span>Press play to start the month</span><span></span></li>';
+  $('losers').innerHTML = k ? mv.slice(-6).reverse().map(li).join('') : '';
+  if (document.activeElement !== scrub) scrub.value = k;
+  scrub.setAttribute('aria-valuetext', dLabel(k));
+  $('capY').textContent = dLabel(k); $('capT').textContent = caption(k);
+  const big = CH.filter(c => !c.rest).reduce((a, b) => b.v[k] > a.v[k] ? b : a);
+  cv.setAttribute('aria-label', `River delta of S&P 500 market value on ${dLabel(k)}: total ${money(TOT[k])}. Largest company channel ${big.name} at ${money(big.v[k])}.`);
+  if ($('tableBox').open) fillTable(k);
+  markWeek(k);
+}
+function fillTable(k) {
+  $('tabDay').textContent = dLabel(k); $('tabN').textContent = CO.length;
+  const rows = CO.slice().sort((a, b) => b.v[k] - a.v[k]);
+  $('tbody').innerHTML = rows.map(c => `<tr><td><span class="sw" style="background:var(--s${GROUPS[c.gi].c})"></span>${c.label}<span class="tk">${c.s}</span></td><td>${c.g}</td>
+    <td class="n">${money(c.v[k])}</td><td class="n">${(c.v[k] / TOT[k] * 100).toFixed(2)}%</td>
+    <td class="n">${k ? pctS(c.v[k] / c.v[k - 1] - 1) : '–'}</td><td class="n">${pctS(c.v[k] / c.v[0] - 1)}</td></tr>`).join('');
+}
+$('tableBox').addEventListener('toggle', () => { if ($('tableBox').open) fillTable(Math.round(T)); });
+
+// ---------- playback ----------
+const playBtn = $('play');
+function setPlaying(p) {
+  playing = p;
+  $('playTxt').textContent = p ? 'Pause' : (T >= ND - 1 ? 'Replay' : 'Play');
+  playBtn.setAttribute('aria-label', p ? 'Pause' : 'Play');
+  $('playIcon').innerHTML = p ? '<path d="M3 1.5h3v11H3zM8 1.5h3v11H8z"/>' : '<path d="M3 1.5v11l9-5.5z"/>';
+  requestDraw();
+}
+playBtn.addEventListener('click', () => { if (!playing && T >= ND - 1) T = 0; setPlaying(!playing); });
+function setT(k, pause) { T = Math.max(0, Math.min(ND - 1, k)); if (pause && playing) setPlaying(false); else if (!playing) setPlaying(false); updateReadout(); requestDraw(); }
+scrub.addEventListener('input', () => setT(+scrub.value, true));
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+  speed = +b.dataset.speed; document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+}));
+document.addEventListener('keydown', e => { if (e.code === 'Space' && !/^(BUTTON|INPUT|SUMMARY|A)$/.test(document.activeElement.tagName)) { e.preventDefault(); playBtn.click(); } });
+
+// ---------- loop ----------
+let rafId = 0, lastTs = 0;
+function requestDraw() { if (!rafId) rafId = requestAnimationFrame(frame); }
+function frame(ts) {
+  rafId = 0;
+  const dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : 0; lastTs = ts;
+  if (playing) { T += dt * speed; if (T >= ND - 1) { T = ND - 1; setPlaying(false); } }
+  updateReadout(); drawStage(dt); drawTL();
+  if (hoverStage) showStageTip();
+  if (playing || !reduced) rafId = requestAnimationFrame(frame); else lastTs = 0;
+}
+document.addEventListener('visibilitychange', () => { lastTs = 0; });
+
+function resizeAll() { sizeStage(); sizeTL(); requestDraw(); }
+readTheme();
+const mq = matchMedia('(prefers-color-scheme: dark)'), onTheme = () => { readTheme(); requestDraw(); };
+mq.addEventListener ? mq.addEventListener('change', onTheme) : mq.addListener(onTheme);
+new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
+new ResizeObserver(resizeAll).observe(document.querySelector('.wrap'));
+resizeAll(); updateReadout(true);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { tlDirty = true; requestDraw(); });
+if (!reduced) setTimeout(() => { if (T === 0 && !playing) setPlaying(true); }, 900);
+})();
+</script>

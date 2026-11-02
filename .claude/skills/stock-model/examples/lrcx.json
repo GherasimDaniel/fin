@@ -1,0 +1,1172 @@
+{
+ "company": "Lam Research Corporation",
+ "ticker": "LRCX",
+ "exchange": "Nasdaq",
+ "asOf": "Oct 22, 2026 (price = Oct 21 close; Q1 FY27 reported Oct 21)",
+ "outFile": "C:\\Users\\gherasid\\work\\workshop\\fin\\Lam Research\\LRCX_Model.xlsx",
+ "basis": "non-GAAP",
+ "adjLabel": "Adjustment to GAAP sales (none)",
+ "scenario": 2,
+ "tvMethod": 1,
+ "market": {
+  "price": 260.81,
+  "priceTag": "10/21/26 close (fell ~6% after hours on results)",
+  "shares": 1255.8,
+  "sharesTag": "Q1'27 diluted",
+  "cash": 7437.4,
+  "debt": 3735.4,
+  "nci": 0,
+  "bsTag": "Q1'27 (9/27/26)",
+  "dps": 1.32,
+  "consensusEps": 9.4,
+  "avgTarget": 365.07,
+  "consensusSource": "EPS: pre-report consensus (Barchart/Zacks, Oct 2026); target: MarketBeat 10/21/26"
+ },
+ "wacc": {
+  "rf": 0.0513,
+  "rfNote": "10-yr Treasury par yield on 10/21/2026 (U.S. Treasury)",
+  "erp": 0.045,
+  "erpNote": "Long-run US ERP assumption",
+  "beta": 1.57,
+  "betaNote": "Blume-adjusted (0.67 x 1.85 + 0.33); raw 5-yr beta 1.85 per MarketBeat 10/21/26",
+  "kd": 0.0583,
+  "kdNote": "10-yr UST + ~70bp for an A-rated credit (A2/A-); $3.75B senior notes",
+  "tax": 0.165,
+  "taxNote": "Non-GAAP tax rate ~16.5% guided (Global Minimum Tax fully effective)",
+  "g": 0.03,
+  "gNote": "Long-run nominal growth after FY2031E",
+  "exitMultiple": 16,
+  "multNote": "Mid-cycle semicap EV/EBITDA (LRCX trades ~21x FY27E EBITDA today)",
+  "maturity": 0.03,
+  "valDate": "2026-10-22"
+ },
+ "periods": {
+  "quarters": [
+   {
+    "label": "Q4'24",
+    "end": "2024-06-30"
+   },
+   {
+    "label": "Q1'25",
+    "end": "2024-09-29"
+   },
+   {
+    "label": "Q2'25",
+    "end": "2024-12-29"
+   },
+   {
+    "label": "Q3'25",
+    "end": "2025-03-30"
+   },
+   {
+    "label": "Q4'25",
+    "end": "2025-06-29"
+   },
+   {
+    "label": "Q1'26",
+    "end": "2025-09-28"
+   },
+   {
+    "label": "Q2'26",
+    "end": "2025-12-28"
+   },
+   {
+    "label": "Q3'26",
+    "end": "2026-03-29"
+   },
+   {
+    "label": "Q4'26",
+    "end": "2026-06-28"
+   },
+   {
+    "label": "Q1'27",
+    "end": "2026-09-27"
+   },
+   {
+    "label": "Q2'27E",
+    "end": "2026-12-27",
+    "est": true
+   },
+   {
+    "label": "Q3'27E",
+    "end": "2027-03-28",
+    "est": true
+   },
+   {
+    "label": "Q4'27E",
+    "end": "2027-06-27",
+    "est": true
+   }
+  ],
+  "years": [
+   {
+    "label": "2022",
+    "end": "2022-06-26"
+   },
+   {
+    "label": "2023",
+    "end": "2023-06-25"
+   },
+   {
+    "label": "2024",
+    "end": "2024-06-30"
+   },
+   {
+    "label": "2025",
+    "end": "2025-06-29"
+   },
+   {
+    "label": "2026",
+    "end": "2026-06-28"
+   }
+  ],
+  "proj": [
+   {
+    "label": "2027E",
+    "end": "2027-06-27"
+   },
+   {
+    "label": "2028E",
+    "end": "2028-06-25"
+   },
+   {
+    "label": "2029E",
+    "end": "2029-06-24"
+   },
+   {
+    "label": "2030E",
+    "end": "2030-06-30"
+   },
+   {
+    "label": "2031E",
+    "end": "2031-06-29"
+   }
+  ]
+ },
+ "segments": [
+  {
+   "name": "Systems",
+   "note": "New leading-edge deposition, etch, clean and other WFE tools (Lam earnings releases, \"Systems revenue\"). Driven by WFE: CY26 ~mid-$150B, CY27 prelim. >$200B (Q1 FY27 call).",
+   "q": [
+    2169.9,
+    2392.7,
+    2625.6,
+    3035.3,
+    3437.6,
+    3547.6,
+    3357.5,
+    3730.6,
+    4249.8,
+    5732.9
+   ],
+   "y": [
+    11322.3,
+    10695.9,
+    8921.6,
+    11491.3,
+    14885.5
+   ],
+   "qEstGrowth": [
+    0.8,
+    0.7,
+    0.55
+   ],
+   "scen": {
+    "bear": [
+     0.02,
+     -0.15,
+     -0.05,
+     0.08
+    ],
+    "base": [
+     0.15,
+     0.06,
+     -0.04,
+     0.06
+    ],
+    "bull": [
+     0.25,
+     0.12,
+     0.06,
+     0.08
+    ],
+    "notes": {
+     "bear": "AI / memory capex digestion after the CY27 peak; China domestic spend falls further",
+     "base": "CY27 WFE >$200B lifts FY28, then a mid-cycle pause in FY30",
+     "bull": "WFE keeps compounding (visibility through 2028); SAM share rises to high-30s % of WFE"
+    }
+   }
+  },
+  {
+   "name": "Customer Support (CSBG)",
+   "note": "Spares, services, upgrades and Reliant (non-leading-edge) tools - \"Customer support-related revenue and other\". Mgmt: >30% growth CY26, >15% CY27.",
+   "q": [
+    1701.6,
+    1775.2,
+    1750.4,
+    1684.9,
+    1733.8,
+    1776.6,
+    1987.3,
+    2110.9,
+    2472.4,
+    2486.5
+   ],
+   "y": [
+    5904.8,
+    6732.6,
+    5983.7,
+    6944.3,
+    8347.2
+   ],
+   "qEstGrowth": [
+    0.28,
+    0.25,
+    0.12
+   ],
+   "scen": {
+    "bear": [
+     0.06,
+     -0.02,
+     0.03,
+     0.05
+    ],
+    "base": [
+     0.14,
+     0.1,
+     0.06,
+     0.07
+    ],
+    "bull": [
+     0.18,
+     0.14,
+     0.1,
+     0.09
+    ],
+    "notes": {
+     "bear": "Utilization dips; Reliant / China mature-node demand fades",
+     "base": "Installed base grows with record systems shipments",
+     "bull": "Upgrades + productivity services scale with installed base"
+    }
+   }
+  }
+ ],
+ "gmScen": {
+  "bear": [
+   0.505,
+   0.495,
+   0.49,
+   0.495
+  ],
+  "base": [
+   0.525,
+   0.53,
+   0.53,
+   0.53
+  ],
+  "bull": [
+   0.535,
+   0.545,
+   0.55,
+   0.555
+  ],
+  "notes": {
+   "bear": "Under-absorption in a downturn; China mix normalizes",
+   "base": "Holds ~52.5% (Dec-qtr guide) with modest new-product uplift",
+   "bull": "Mgmt's multi-year path to mid-50s (Akara, Aether, close-to-customer mfg, pricing)"
+  }
+ },
+ "q": {
+  "gaapSales": [
+   3871.5,
+   4168,
+   4376,
+   4720.2,
+   5171.4,
+   5324.2,
+   5344.8,
+   5841.5,
+   6722.2,
+   8219.4
+  ],
+  "gp": [
+   1876.3,
+   2009,
+   2077.2,
+   2312.4,
+   2601,
+   2693.6,
+   2658.3,
+   2913.1,
+   3497.3,
+   4305
+  ],
+  "sga": [
+   204.3,
+   234.9,
+   242,
+   230.3,
+   257.6,
+   266.3,
+   262.1,
+   280.7,
+   302.1,
+   344.2
+  ],
+  "rd": [
+   484.9,
+   487.2,
+   492.5,
+   533.1,
+   564.8,
+   565.6,
+   565.3,
+   585.4,
+   614.3,
+   660.1
+  ],
+  "gaapOpInc": [
+   1126.6,
+   1264.2,
+   1333.9,
+   1561.8,
+   1741.1,
+   1829.1,
+   1810.2,
+   2047,
+   2513.5,
+   3283.7
+  ],
+  "pretax": [
+   1206.1,
+   1300.3,
+   1353.2,
+   1541.7,
+   1783,
+   1869.3,
+   1841.3,
+   2039.4,
+   2561.7,
+   3316.9
+  ],
+  "taxRate": [
+   0.11544,
+   0.1375,
+   0.13168,
+   0.13341,
+   0.04784,
+   0.14163,
+   0.13232,
+   0.09218,
+   0.11,
+   0.16535
+  ],
+  "ni": [
+   1066.9,
+   1121.5,
+   1175,
+   1336,
+   1697.7,
+   1604.6,
+   1597.6,
+   1851.4,
+   2280,
+   2768.4
+  ],
+  "gaapNi": [
+   1020.3,
+   1116.4,
+   1191,
+   1330.7,
+   1720.1,
+   1568.7,
+   1594,
+   1825.5,
+   2277.3,
+   2753.1
+  ],
+  "shares": [
+   1311.1,
+   1304.1,
+   1291.5,
+   1288.1,
+   1276.9,
+   1269.3,
+   1261.7,
+   1257.3,
+   1256,
+   1255.8
+  ],
+  "epsRep": [
+   0.814,
+   0.86,
+   0.91,
+   1.04,
+   1.33,
+   1.26,
+   1.27,
+   1.47,
+   1.82,
+   2.2
+  ],
+  "gaapEps": [
+   0.778,
+   0.856,
+   0.92,
+   1.03,
+   1.35,
+   1.24,
+   1.26,
+   1.45,
+   1.81,
+   2.19
+  ],
+  "cash": [
+   5847.9,
+   6067.5,
+   5665.4,
+   5450.7,
+   6390.7,
+   6693,
+   6180.4,
+   4750.9,
+   5579.2,
+   7437.4
+  ],
+  "ar": [
+   2519.3,
+   2937.2,
+   3304.9,
+   3228.2,
+   3378.1,
+   3633,
+   3492,
+   4132.9,
+   5339.7,
+   5658.4
+  ],
+  "inv": [
+   4217.9,
+   4209.9,
+   4358.2,
+   4463.3,
+   4308,
+   4095.1,
+   4037.7,
+   4000,
+   4276.1,
+   4550.5
+  ],
+  "ppe": [
+   2154.5,
+   2214.3,
+   2313.6,
+   2372.2,
+   2428.7,
+   2510.5,
+   2711,
+   2853.6,
+   2956.5,
+   3126
+  ],
+  "assets": [
+   18744.7,
+   19532.5,
+   19839.9,
+   19968.3,
+   21345.3,
+   21900.2,
+   21391.2,
+   20791.9,
+   23529.7,
+   26353.1
+  ],
+  "ap": [
+   614,
+   704.2,
+   822.3,
+   853.3,
+   854.2,
+   863.2,
+   1026.9,
+   1071.6,
+   1302.5,
+   null
+  ],
+  "nciBS": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "equity": [
+   8539.5,
+   8471.9,
+   8808,
+   9511.1,
+   9861.6,
+   10192.8,
+   10145.4,
+   10584.8,
+   12470.9,
+   13908.5
+  ],
+  "debt": [
+   4983.3,
+   4983.8,
+   4982.3,
+   4484.3,
+   4484.5,
+   4483.9,
+   4483.7,
+   3734.5,
+   3734.6,
+   3735.4
+  ],
+  "ocf": [
+   862.4,
+   1568.5,
+   741.9,
+   1308.7,
+   2554.2,
+   1779,
+   1480,
+   1141.4,
+   1457.2,
+   3497.7
+  ],
+  "capex": [
+   -100.7,
+   -110.6,
+   -188.3,
+   -288.1,
+   -172.2,
+   -185.1,
+   -260.9,
+   -331.6,
+   -188.8,
+   -257.7
+  ],
+  "hedge": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "dep": [
+   88.4,
+   94.3,
+   96.2,
+   97.3,
+   98.4,
+   101.6,
+   103.9,
+   116.3,
+   119.6,
+   122.1
+  ],
+  "amort": [
+   3.8,
+   3.8,
+   3.4,
+   3.2,
+   3.2,
+   3.2,
+   2.9,
+   3,
+   3,
+   3
+  ],
+  "sbc": [
+   79.1,
+   80,
+   82,
+   87.1,
+   94.3,
+   97.2,
+   88.5,
+   96.6,
+   104,
+   114.7
+  ],
+  "div": [
+   -261.5,
+   -261,
+   -297.6,
+   -295.7,
+   -295.2,
+   -292,
+   -327.5,
+   -325.8,
+   -325.3,
+   -325.4
+  ],
+  "buyback": [
+   -373.5,
+   -997,
+   -697.7,
+   -435.3,
+   -1292.3,
+   -975.8,
+   -1466.2,
+   -1162.8,
+   -246.6,
+   -1025
+  ]
+ },
+ "y": {
+  "gaapSales": [
+   17227,
+   17428.5,
+   14905.4,
+   18435.6,
+   23232.7
+  ],
+  "gp": [
+   7867.7,
+   7886.4,
+   7184,
+   8999.5,
+   11762.3
+  ],
+  "sga": [
+   849.1,
+   814,
+   809.4,
+   964.8,
+   1111.3
+  ],
+  "rd": [
+   1620.1,
+   1717.2,
+   1861.9,
+   2077.6,
+   2330.7
+  ],
+  "gaapOpInc": [
+   5381.8,
+   5174.9,
+   4263.9,
+   5901,
+   8199.8
+  ],
+  "pretax": [
+   5250.6,
+   5272.3,
+   4553.5,
+   5978.2,
+   8311.8
+  ],
+  "taxRate": [
+   0.11315,
+   0.11999,
+   0.12204,
+   0.10839,
+   0.11769
+  ],
+  "ni": [
+   4656.5,
+   4639.7,
+   3997.8,
+   5330.2,
+   7333.6
+  ],
+  "gaapNi": [
+   4605.3,
+   4510.9,
+   3827.8,
+   5358.2,
+   7265.4
+  ],
+  "shares": [
+   1406.3,
+   1358.3,
+   1320,
+   1290.1,
+   1261.1
+  ],
+  "epsRep": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "gaapEps": [
+   3.275,
+   3.321,
+   2.9,
+   4.15,
+   5.76
+  ],
+  "cash": [
+   3522,
+   5337.1,
+   5847.9,
+   6390.7,
+   5579.2
+  ],
+  "ar": [
+   4313.8,
+   2823.4,
+   2519.3,
+   3378.1,
+   5339.7
+  ],
+  "inv": [
+   3966.3,
+   4816.2,
+   4217.9,
+   4308,
+   4276.1
+  ],
+  "ppe": [
+   1647.6,
+   1856.7,
+   2154.5,
+   2428.7,
+   2956.5
+  ],
+  "assets": [
+   17195.6,
+   18781.6,
+   18744.7,
+   21345.3,
+   23529.7
+  ],
+  "ap": [
+   1011.2,
+   470.7,
+   614,
+   854.2,
+   1302.5
+  ],
+  "nciBS": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "equity": [
+   6278.4,
+   8210.2,
+   8539.5,
+   9861.6,
+   12470.9
+  ],
+  "debt": [
+   5005.8,
+   5011.5,
+   4983.3,
+   4484.5,
+   3734.6
+  ],
+  "ocf": [
+   3099.7,
+   5178.9,
+   4652.3,
+   6173.3,
+   5857.7
+  ],
+  "capex": [
+   -546,
+   -501.6,
+   -396.7,
+   -759.2,
+   -966.4
+  ],
+  "hedge": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "dep": [
+   333.7,
+   342.4,
+   359.7,
+   386.3,
+   441.5
+  ],
+  "amort": [
+   51.8,
+   15.3,
+   15.4,
+   13.6,
+   12.1
+  ],
+  "sbc": [
+   259.1,
+   286.6,
+   293.1,
+   343.4,
+   386.4
+  ],
+  "div": [
+   -815.3,
+   -907.9,
+   -1018.9,
+   -1149.5,
+   -1270.6
+  ],
+  "buyback": [
+   -3865.7,
+   -2017,
+   -2842.8,
+   -3422.3,
+   -3851.3
+  ]
+ },
+ "qEst": {
+  "gm": [
+   0.525,
+   0.525,
+   0.526
+  ],
+  "sga": [
+   0.041,
+   0.04,
+   0.04
+  ],
+  "rd": [
+   0.079,
+   0.078,
+   0.078
+  ],
+  "other": [
+   20,
+   25,
+   30
+  ],
+  "tax": [
+   0.165,
+   0.165,
+   0.165
+  ],
+  "nci": [
+   0,
+   0,
+   0
+  ],
+  "shareGrowth": [
+   -0.0022,
+   -0.003,
+   -0.003
+  ],
+  "adjPct": [
+   0,
+   0,
+   0
+  ]
+ },
+ "proj": {
+  "sga": [
+   null,
+   0.041,
+   0.042,
+   0.043,
+   0.043
+  ],
+  "rd": [
+   null,
+   0.082,
+   0.084,
+   0.086,
+   0.086
+  ],
+  "other": [
+   null,
+   120,
+   150,
+   170,
+   190
+  ],
+  "tax": [
+   null,
+   0.165,
+   0.165,
+   0.165,
+   0.165
+  ],
+  "nci": [
+   null,
+   0,
+   0,
+   0,
+   0
+  ],
+  "shareGrowth": [
+   null,
+   -0.018,
+   -0.018,
+   -0.015,
+   -0.015
+  ],
+  "adjPct": [
+   null,
+   0,
+   0,
+   0,
+   0
+  ],
+  "da": [
+   0.015,
+   0.017,
+   0.019,
+   0.021,
+   0.022
+  ],
+  "capex": [
+   0.036,
+   0.036,
+   0.038,
+   0.036,
+   0.035
+  ],
+  "nwc": [
+   0.25,
+   0.25,
+   0.25,
+   0.25,
+   0.25
+  ],
+  "noncore": [
+   0.001,
+   0.001,
+   0.001,
+   0.001,
+   0.001
+  ],
+  "fraction": [
+   0.75,
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ "rowNotes": {
+  "gp": "Non-GAAP P&L from each earnings release reconciliation (excl. intangible amortization, elective deferred comp (EDC) mark-to-market, restructuring / workforce charges, note-discount amortization, discrete tax items). Annual = sum of quarters.",
+  "sga": "Non-GAAP SG&A / R&D = GAAP line less the EDC, amortization and workforce items booked to that line.",
+  "other": "History = non-GAAP pretax - non-GAAP operating income (interest income net of interest expense, ex-EDC asset gains). Projections are $ inputs, rising with net cash.",
+  "taxR": "Non-GAAP tax rate ~11-13% through FY26; 16.5% from Q1 FY27 (GMT). Malaysia 15-yr tax incentive saved $968mm in FY26.",
+  "sh": "Diluted shares restated for the 10-for-1 split (Oct 2024). Annual = 12-month diluted count from the Q4 release.",
+  "epsrep": "Company non-GAAP diluted EPS (quarters; pre-split values / 10). Lam doesn't publish full-year non-GAAP EPS.",
+  "shG": "Buybacks: long-term plan returns ~85% of FCF; $3B left on the authorization after Q1 FY27.",
+  "cash": "Cash & equivalents (FY22-23 also held $136mm / $38mm short-term investments, not included).",
+  "debt": "Senior notes + finance leases (balance sheet). $750mm notes repaid Mar 2026.",
+  "ap": "AP from SEC XBRL; Q1'27 not yet filed (10-Q pending).",
+  "dep": "Quarters: D&A from release cash flow; years: 10-K D&A (XBRL).",
+  "amort": "Intangible amortization excluded from non-GAAP (release reconciliations).",
+  "cx": "$3B+ multi-site R&D lab build (Aug 2026), Tualatin up to $1.7B through 2041, India ~$1.2B: capex stays ~3.5-3.8% of sales.",
+  "nonc": "Cash items excluded from non-GAAP (workforce / restructuring); EDC marks are offset by the EDC asset gains.",
+  "frac": "Balance sheet is as of 9/27/2026 (Q1 FY27), so only Q2-Q4 of FY27 FCF is counted.",
+  "ebit": "Stock-based comp is NOT added back (treated as a real cost)."
+ },
+ "main": {
+  "descLines": [
+   "Systems: leading-edge etch, deposition and clean tools (Kiyo, Akara, Altus, Striker, Sabre, Aether dry resist); ~70% of sales",
+   "Customer Support (CSBG): spares, services, upgrades and Reliant tools for the installed base; ~30% of sales",
+   "Q1 FY27 systems mix: memory 46% (NAND 26%, DRAM 20%), foundry 46%, logic / other 8%; China 35% of revenue"
+  ],
+  "management": [
+   "Timothy M. Archer - President & CEO",
+   "Douglas R. Bettinger - EVP & Chief Financial Officer",
+   "Sesha Varadarajan - Chief Operating Officer (since Mar 2026)"
+  ],
+  "guidance": [
+   "Q1 FY27 (Sep-26): revenue $8.22B (+54% y/y), non-GAAP GM 52.4%, op. margin 40.2% (first >40%), EPS $2.20",
+   "Q2 FY27 guide: revenue $8.6B +/- $0.4B, GM 52.5%, op. margin 40.5%, EPS $2.33 +/- $0.15, 1.253B shares",
+   "WFE: CY26 ~mid-$150B; CY27 preliminary >$200B (DRAM-led); CSBG >30% CY26, >15% CY27",
+   "Long term: GM toward mid-50s; Aether dry resist ~$2.5B by 2030; return ~85% of FCF; Investor Day (Feb 2025) 2028 targets of $25-27B revenue already exceeded"
+  ],
+  "extraTakeaways": [
+   "- Key risks: WFE cyclicality after an AI-driven peak, China (35% of sales; export controls), customer concentration (4 customers = 55% of FY26 sales), supply / cleanroom constraints."
+  ]
+ },
+ "contracts": [
+  {
+   "counterparty": "Largest customer (not named)",
+   "date": "FY2026",
+   "segment": "Systems + CSBG",
+   "value": 3717,
+   "type": "Customer concentration: 16% of FY26 revenue",
+   "term": 1,
+   "implied": true,
+   "scope": "Leading-edge WFE tools and services. Lam does not name 10% customers.",
+   "why": "Largest single exposure; top-4 = 55% of FY26 sales ($12.8B).",
+   "source": "Lam FY2026 10-K, revenue concentration note"
+  },
+  {
+   "counterparty": "2nd-largest customer (not named)",
+   "date": "FY2026",
+   "segment": "Systems + CSBG",
+   "value": 3485,
+   "type": "Customer concentration: 15% of FY26 revenue",
+   "term": 1,
+   "implied": true,
+   "scope": "As above (likely a leading memory or foundry chipmaker).",
+   "why": "FY25 had only two 10% customers (17%, 15%): concentration is rising.",
+   "source": "Lam FY2026 10-K"
+  },
+  {
+   "counterparty": "3rd-largest customer (not named)",
+   "date": "FY2026",
+   "segment": "Systems + CSBG",
+   "value": 2788,
+   "type": "Customer concentration: 12% of FY26 revenue",
+   "term": 1,
+   "implied": true,
+   "scope": "As above.",
+   "why": "Five customers held 20/16/15/11/10% of receivables at 6/28/26.",
+   "source": "Lam FY2026 10-K"
+  },
+  {
+   "counterparty": "4th-largest customer (not named)",
+   "date": "FY2026",
+   "segment": "Systems + CSBG",
+   "value": 2788,
+   "type": "Customer concentration: 12% of FY26 revenue",
+   "term": 1,
+   "implied": true,
+   "scope": "As above.",
+   "why": "Customer capex plans drive the Systems growth inputs.",
+   "source": "Lam FY2026 10-K"
+  },
+  {
+   "counterparty": "Suppliers (non-cancelable purchase obligations)",
+   "date": "2026-06-28",
+   "segment": "Systems + CSBG",
+   "value": 1481,
+   "type": "Purchase obligations ($1,057mm due FY27)",
+   "term": null,
+   "implied": false,
+   "scope": "Minimum non-cancelable commitments for components, outsourced manufacturing and services.",
+   "why": "Supply constraints capped the Dec-qtr guide; commitments back the ramp.",
+   "source": "Lam FY2026 10-K, commitments note"
+  },
+  {
+   "counterparty": "Government of Malaysia",
+   "date": "FY2022",
+   "segment": "Corporate (tax)",
+   "value": 968,
+   "type": "Tax incentive ruling (15 years from FY22); $ = FY26 tax saving",
+   "term": null,
+   "implied": false,
+   "scope": "Reduced tax on a Malaysian manufacturing subsidiary (Penang / Batu Kawan).",
+   "why": "Worth ~$0.77/sh in FY26; key reason the tax rate is mid-teens.",
+   "source": "Lam FY2026 10-K, income tax note"
+  },
+  {
+   "counterparty": "Washington County & City of Tualatin, OR",
+   "date": "2026-07-31",
+   "segment": "Corporate (R&D / capex)",
+   "value": 1700,
+   "type": "Strategic Investment Program agreement (investment \"up to\")",
+   "term": 15,
+   "implied": true,
+   "scope": "Property-tax abatement for up to $1.7B of investment in Tualatin through 2041; part of a $3B+ multi-site R&D lab expansion.",
+   "why": "Drives the capex inputs (~3.6% of sales); ~$27mm of substitute payments over 15 years.",
+   "source": "Washington County press release, Jul 31, 2026; Hillsboro News-Times, Aug 12, 2026"
+  },
+  {
+   "counterparty": "Government of Karnataka (KIADB), India",
+   "date": "2025-02-19",
+   "segment": "Corporate (manufacturing / R&D)",
+   "value": 1200,
+   "type": "MoU - investment commitment (Rs 10,000 crore)",
+   "term": null,
+   "implied": false,
+   "scope": "Bengaluru (Whitefield) manufacturing and R&D; Sep 2026 update adds a silicon-component plant (ingot to parts).",
+   "why": "Supply-chain diversification and close-to-customer manufacturing (gross-margin lever).",
+   "source": "Reuters via Yahoo Finance, Feb 2025; ANI, Sep 16, 2026"
+  }
+ ],
+ "sources": [
+  [
+   "Shkreli model layout reference",
+   "https://github.com/martinshkreli/models"
+  ],
+  [
+   "10-K FY2026 (fiscal year ended 6/28/2026)",
+   "https://www.sec.gov/Archives/edgar/data/707549/000070754926000037/lrcx-20260628.htm"
+  ],
+  [
+   "Q1 FY27 earnings release (8-K 10/21/2026, Ex. 99.1)",
+   "https://www.sec.gov/Archives/edgar/data/707549/000070754926000052/lrcx_exhibitx991xq1x2027.htm"
+  ],
+  [
+   "Q4 FY26 earnings release (8-K 7/29/2026)",
+   "https://www.sec.gov/Archives/edgar/data/707549/000070754926000033/lrcx_exhibitx991xq4x2026.htm"
+  ],
+  [
+   "Earlier earnings releases (Q1 FY22 - Q3 FY26), 8-K Ex. 99.1",
+   "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0000707549&type=8-K"
+  ],
+  [
+   "SEC XBRL company facts",
+   "https://data.sec.gov/api/xbrl/companyfacts/CIK0000707549.json"
+  ],
+  [
+   "Q1 FY27 call highlights (WFE, tax, CSBG, GM)",
+   "https://www.gurufocus.com/news/9136007/lam-research-corp-lrcx-q1-2027-earnings-call-highlights-record-revenue-firstever-40-operating-margin-and-a-bullish-200-billion-wfe-outlook"
+  ],
+  [
+   "Q1 FY27 call transcript",
+   "https://www.fool.com/earnings/call-transcripts/2026/10/21/lam-research-lrcx-q1-2027-earnings-call-transcript/"
+  ],
+  [
+   "Share price history",
+   "https://stockanalysis.com/stocks/lrcx/history/"
+  ],
+  [
+   "Beta, price target, dividend (MarketBeat 10/21/2026)",
+   "https://www.marketbeat.com/instant-alerts/earnings-lam-research-nasdaq-lrcx-posts-quarterly-earnings-results-beats-estimates-by-002-eps-2026-10-21/"
+  ],
+  [
+   "FY27 EPS consensus (pre-report)",
+   "https://barchart.com/story/news/3142569/what-you-need-to-know-ahead-of-lam-research-s-earnings-release"
+  ],
+  [
+   "10-yr Treasury yield",
+   "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value=2026"
+  ],
+  [
+   "Tualatin Strategic Investment Program agreement",
+   "https://www.washingtoncountyor.gov/cao/news/2026/07/31/washington-county-and-city-tualatin-announce-proposed-agreement-lam-research-17-billion-investment"
+  ],
+  [
+   "$3B R&D lab expansion",
+   "https://www.manufacturingdive.com/news/lam-research-ai-semiconductor-lab-oregon-fab-facility/828996/"
+  ],
+  [
+   "India investment (Feb 2025)",
+   "https://finance.yahoo.com/news/us-chip-toolmaker-lam-research-044637223.html"
+  ],
+  [
+   "India silicon-component plant (Sep 2026)",
+   "https://www.aninews.in/news/business/lam-research-plans-rs-10000-crore-india-investment-for-silicon-component-manufacturing-rampd-expansion20260916162109/"
+  ]
+ ],
+ "methodology": [
+  "Non-GAAP = Lam's basis for guidance and consensus; GAAP operating income, net income and EPS are shown alongside. Differences are small (intangible amortization, EDC marks, restructuring, discrete tax).",
+  "Fiscal year ends on the last Sunday of June (FY2026 = 6/28/2026). Q1 FY27 (Sep-26) is taken from the 10/21/2026 release; its 10-Q was not yet filed.",
+  "Segments = Systems vs Customer Support (CSBG) revenue disclosed in every release (Lam reports one operating segment). Pre-Oct-2024 share counts / EPS restated for the 10-for-1 split.",
+  "DCF: UFCF = (non-GAAP EBIT - non-core cash costs) x (1 - tax) + D&A - capex - increase in NWC; SBC treated as a cost; mid-period discounting from the valuation date.",
+  "Not investment advice. Built from public filings and press coverage."
+ ]
+}
