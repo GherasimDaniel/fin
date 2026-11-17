@@ -1164,9 +1164,9 @@
  {
   "sym": "EME",
   "name": "Emcor|| Industrials",
-  "sector": "Construction & Engineering",
-  "sub": "[[Norwalk, Connecticut]]",
-  "cik": "1994"
+  "sector": "Industrials",
+  "sub": "Construction & Engineering",
+  "cik": "0000105634"
  },
  {
   "sym": "EMR",
@@ -1883,13 +1883,6 @@
   "cik": "0000019617"
  },
  {
-  "sym": "KVUE",
-  "name": "Kenvue|| Consumer Staples",
-  "sector": "Personal Care Products",
-  "sub": "[[Skillman, New Jersey]]",
-  "cik": "2022 ([[Johnson & Johnson]] spinoff)"
- },
- {
   "sym": "KDP",
   "name": "Keurig Dr Pepper",
   "sector": "Consumer Staples",
@@ -2427,6 +2420,13 @@
   "sector": "Energy",
   "sub": "Oil & Gas Exploration & Production",
   "cik": "0000797468"
+ },
+ {
+  "sym": "OKTA",
+  "name": "Okta, Inc.",
+  "sector": "Information Technology",
+  "sub": "Application Software",
+  "cik": "0001660134"
  },
  {
   "sym": "ODFL",
