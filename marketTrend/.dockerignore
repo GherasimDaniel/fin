@@ -1,0 +1,5 @@
+# Only what the image build needs: the page builder, its template and the current data
+*
+!scripts/lib/page.js
+!scripts/template.html
+!data/month.js

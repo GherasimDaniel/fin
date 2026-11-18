@@ -9,6 +9,11 @@ const page = require('./scripts/lib/page');
 const PORT = +process.env.PORT || 8787;
 let job = { state: 'idle' }, running = null, lastCheck = 0;
 
+// keep month-delta.html and build/month-delta.body.html in step with data/month.js
+function writeStatic() {
+  try { page.write(); } catch (e) { console.error('could not rewrite month-delta.html:', e.message); }
+}
+
 function startUpdate() {
   if (running) return running;
   // a page reload right after an update does not need a second check
@@ -18,6 +23,7 @@ function startUpdate() {
     .then(r => {
       job = { state: 'done', added: r.added, latest: r.latest };
       lastCheck = Date.now();
+      writeStatic();
       console.log(new Date().toLocaleTimeString(), r.added.length ? `added ${r.added.join(', ')}; window now ${r.first} to ${r.latest}` : `up to date (latest close ${r.latest})`);
     })
     .catch(e => { job = { state: 'error', message: e.message }; console.error('update failed:', e.message); })
@@ -36,6 +42,7 @@ const server = http.createServer((req, res) => {
     send(500, 'text/plain', 'Error: ' + e.message);
   }
 });
+writeStatic();
 server.listen(PORT, '127.0.0.1', () => {
   const url = `http://localhost:${PORT}`;
   console.log(`Month delta running at ${url}  (Ctrl+C to stop)`);

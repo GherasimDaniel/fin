@@ -11,4 +11,12 @@ function body({ live = false } = {}) {
 function full(opts) {
   return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n</head>\n<body>\n' + body(opts) + '\n</body>\n</html>\n';
 }
-module.exports = { body, full };
+// Rewrites the static copies (month-delta.html and build/month-delta.body.html) from the current data.
+function write() {
+  const b = body({ live: false });
+  for (const m of b.matchAll(/<script>([\s\S]*?)<\/script>/g)) new Function(m[1]); // syntax check before overwriting
+  fs.mkdirSync(path.join(ROOT, 'build'), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, 'build', 'month-delta.body.html'), b);
+  fs.writeFileSync(path.join(ROOT, 'month-delta.html'), full({ live: false }));
+}
+module.exports = { body, full, write };

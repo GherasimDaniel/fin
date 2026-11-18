@@ -14,10 +14,16 @@ Today's close is added after 4:20 pm New York time; until then the latest day is
 Published snapshot (does not update by itself): https://claude.ai/artifact/9m5B9KHMriV53uYDtRsdBE
 Ask Claude to republish `build/month-delta.body.html` to refresh it.
 
+## Docker
+`docker build -t month-delta . && docker run --rm -p 8080:80 month-delta`, then open http://localhost:8080.
+The image is nginx serving a static copy built from `data/month.js` at build time. It does not update itself:
+run `node scripts/update.js` (or `open-month-delta.cmd`) to fetch new trading days, then rebuild the image.
+
 ## Files
 - `serve.js` - the local helper (http://localhost:8787, local machine only).
 - `open-month-delta.cmd` - starts the helper and opens the page.
-- `month-delta.html` - static copy of the page with the current data (no live updates).
+- `month-delta.html` - static copy of the page with the current data (no live updates). The helper rewrites it
+  (and `build/month-delta.body.html`) when it starts and after every update check, so it always matches `data/month.js`.
 - `data/daily_market_values.csv` - one row per company per day in the current window.
 - `data/month.js` - the data the page uses. `data/meta.json` - window dates and last update time.
 - `data/raw/` - downloaded inputs: Wikipedia member list, SEC share counts, Yahoo closes for the window only.
